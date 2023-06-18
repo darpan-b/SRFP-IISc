@@ -1,0 +1,62 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper, total={6in, 10in}]{geometry}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\setlength{\parindent}{0em}
+
+\title{\textbf{IASc-INSA-NASI SRFP 2023}\\
+       \textsc{Four-week Report}}
+
+\author{\vspace{0.1cm}Darpan Bhattacharya \\
+\fontfamily{cmss}\selectfont{\footnotesize{Application ID: ENGS302}} \\
+\fontfamily{cmss}\selectfont{\footnotesize{Guide: Prof L. Sunil Chandran, IISc Bengaluru}}}
+\date{19 June, 2023}
+
+\begin{document}
+\maketitle
+\hrule
+
+\section*{Introduction}
+This is the four-week report of my summer research project under Prof L. Sunil Chandran at Indian Institute of Science, Bengaluru. \\
+I have primarily worked for the past four weeks trying to learn and understand the nature and number of monochromatic perfect matchings in regular graphs and $n$-uniform hypergraphs, and the main topics that I have learnt and worked on over the past four weeks are summarized below.
+% I have spent the past four weeks trying to learn about the nature and number of monochromatic perfect matchings in regular and $n$-uniform hypergraphs. 
+% The following is a short summary of the main topics I have learnt and worked on in the past four weeks.
+
+\section*{Perfect matchings in regular graphs}
+In a regular graph $G=(V,E)$, a \textit{perfect matching} is a matching $M$ of the graph such that $\forall \hspace{0.1cm} v \in V(G)$, $v$ is a part of some matched edge in $M$. \\
+For a perfectly monochromatic colouring $c$ of $G$, the number of normal colour classes \\containing at least one perfect matching is represented by $\mu(G,c)$.
+The \textit{matching index} of $G$, denoted by $\mu(G)$ is defined as \mbox{$\mu(G) = \max\limits_{c \in \mathcal{C}(G)} \mu(G,c)$}, where $\mathcal{C}(G)$ is the set of all perfectly monochromatic colourings of $G$. \\ \\
+In a regular graph, Bogdanov\cite{bogdanov} proved that $\forall \hspace{0.1cm} G$ isomorphic to $K_4$, the number of \\\textit{disjoint} perfect matchings of $G=3$, and for all other regular graphs non-isomorphic to $K_4$, the number of disjoint perfect matchings is at most $2$. This proof was used in \cite{chandran2022perfect} to theorize that $\forall \hspace{0.1cm} G$ isomorphic to $K_4$, $\mu(G)=3$, otherwise $\mu(G) \le 2$.
+
+\section*{Hypergraphs}
+According to \cite{10.5555/3002498}, a \textit{hypergraph} is a pair $H=(V,E)$, where $V$ is a finite set whose elements are called \textit{vertices}, and $E$ is a family of subsets of $V$, called \textit{edges}. \\
+A hypergraph $H$ is said to be \textit{$n$-uniform} if $\forall \hspace{0.1cm} e \in E$, $e$ contains precisely $n$ vertices. \\\\
+A \textit{perfect matching}, $\mathcal{M}$ of a $n$-uniform hypergraph $H=(V,E)$ can be defined as a matching $M$ of $H$ such that $\forall \hspace{0.1cm} v \in V$, $v$ is part of some edge in $M$. It is trivial to note that for a $n$-uniform hypergraph to have a perfect matching, $|V| \equiv 0 \pmod n$. \\ \\
+A $n$-uniform hypergraph $H$ is said to be perfectly monochromatic if the following \\properties hold:
+\begin{enumerate}
+    \item $\forall \hspace{0.1cm} e \in E$, $e$ must be part of some perfect matching $\mathcal{M}$.
+    \item Every perfect matching, $\mathcal{M}$ of $H$ is monochromatic.
+    \item Let $\mathcal{C}$ be set of colour classes such that $\exists$ a perfect matching $\mathcal{M}$ of $H$ such that $\mathcal{M}$ belongs to a colour class $c \in \mathcal{C}$. Then $\forall \hspace{0.1cm} c \in \mathcal{C}$, $c$ must belong to \textit{exactly} $1$ perfect matching $\mathcal{M}$ of $H$.
+\end{enumerate}
+Now, for a perfectly monochromatic hypergraph $H$, we call the dimension $D=|\mathcal{C}|$ of the hypergraph to be the number of colours in it. We are intereseted in finding the bounds on $D$ for a $n$-uniform hypergraph containing $k\cdot n$ vertices.
+
+\section*{Perfect matchings in $3$-uniform hypergraphs}
+Since we are interested in finding the bounds on $D$, we start with trying to find the bounds on $D$ for $3$-uniform hypergraphs. We analyzed some particular cases and the results we came up with are:
+\begin{itemize}
+    \item For $|V|=3$, it can be trivially observed that $D=1$.
+    \item For $|V|=6$, the upper bound on $D=10$. \\
+    This can be verified by observing that in a complete $3$-uniform hypergraph with $|V|=6$, there are $\displaystyle\binom{6}{3}=20$ edges. We can colour each edge and its complement with the same colour, forming a monochromatic perfect matching, and thus the number of monochromatic perfect matchings for a $3$-uniform hypergraph with $|V|=6$ is $20/2=10$.
+    %\displaystyle\frac{20}{2}=10$.
+    % single $3$-uniform hypergraph with $|V|=6$, there can be only $1$ perfect matching. So we can calculate $D$ if we find the number of $3$-uniform hypergraphs with $|V|=6$, and the number of $3$-uniform hypergraphs with $|V|=6$ is $\displaystyle\frac{\binom{6}{3}}{2}=10$.
+    \item For $|V|=9$, the upper bound on $D$ turned out to be $13$. I verified it independently by writing a program which found out the value of $D$ by combining randomization and brute force techniques. 
+    \item For $|V|=12$, I developed a partly randomized program to compute the bounds on $D$, and the upper bound from that program turned out to be $10$, which surprisingly enough, turns out to be the same value as for $|V|=6$.
+\end{itemize}
+
+\vspace{1cm}
+Besides trying to analyze and compute the bounds for $D$ for $3$-uniform hypergraphs, I have also tried implementing Algorithm 1 in \cite{chandran2022perfect}, in the process of which I learnt about the Edmonds' blossom algorithm for finding the maximum number of perfect matchings in a regular graph, and the Edmonds-Karp algorithm for finding the maximum flow in a regular graph.
+
+
+\bibliographystyle{abbrv}
+\bibliography{bibliography}
+
+\end{document}
