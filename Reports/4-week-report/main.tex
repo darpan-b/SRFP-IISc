@@ -18,15 +18,15 @@
 
 \section*{Introduction}
 This is the four-week report of my summer research project under Prof L. Sunil Chandran at Indian Institute of Science, Bengaluru. \\
-I have primarily worked for the past four weeks trying to learn and understand the nature and number of monochromatic perfect matchings in regular graphs and $n$-uniform hypergraphs, and the main topics that I have learnt and worked on over the past four weeks are summarized below.
+I have primarily worked for the past four weeks trying to learn and understand the nature and number of monochromatic perfect matchings in graphs and $n$-uniform hypergraphs, and the main topics that I have learnt and worked on over the past four weeks are summarized below.
 % I have spent the past four weeks trying to learn about the nature and number of monochromatic perfect matchings in regular and $n$-uniform hypergraphs. 
 % The following is a short summary of the main topics I have learnt and worked on in the past four weeks.
 
-\section*{Perfect matchings in regular graphs}
-In a regular graph $G=(V,E)$, a \textit{perfect matching} is a matching $M$ of the graph such that $\forall \hspace{0.1cm} v \in V(G)$, $v$ is a part of some matched edge in $M$. \\
+\section*{Perfect matchings in graphs}
+In a graph $G=(V,E)$, a \textit{perfect matching} is a matching $M$ of the graph such that $\forall \hspace{0.1cm} v \in V(G)$, $v$ is a part of some matched edge in $M$. \\
 For a perfectly monochromatic colouring $c$ of $G$, the number of normal colour classes \\containing at least one perfect matching is represented by $\mu(G,c)$.
 The \textit{matching index} of $G$, denoted by $\mu(G)$ is defined as \mbox{$\mu(G) = \max\limits_{c \in \mathcal{C}(G)} \mu(G,c)$}, where $\mathcal{C}(G)$ is the set of all perfectly monochromatic colourings of $G$. \\ \\
-In a regular graph, Bogdanov\cite{bogdanov} proved that $\forall \hspace{0.1cm} G$ isomorphic to $K_4$, the number of \\\textit{disjoint} perfect matchings of $G=3$, and for all other regular graphs non-isomorphic to $K_4$, the number of disjoint perfect matchings is at most $2$. This proof was used in \cite{chandran2022perfect} to theorize that $\forall \hspace{0.1cm} G$ isomorphic to $K_4$, $\mu(G)=3$, otherwise $\mu(G) \le 2$.
+In a  graph, Bogdanov\cite{bogdanov} proved that $\forall \hspace{0.1cm} G$ isomorphic to $K_4$, the number of \textit{disjoint} \\perfect matchings of $G=3$, and for all other  graphs non-isomorphic to $K_4$, the number of disjoint perfect matchings is at most $2$. This proof was used in \cite{chandran2022perfect} to theorize that $\forall \hspace{0.1cm} G$ isomorphic to $K_4$, $\mu(G)=3$, otherwise $\mu(G) \le 2$.
 
 \section*{Hypergraphs}
 According to \cite{10.5555/3002498}, a \textit{hypergraph} is a pair $H=(V,E)$, where $V$ is a finite set whose elements are called \textit{vertices}, and $E$ is a family of subsets of $V$, called \textit{edges}. \\
@@ -53,7 +53,7 @@ Since we are interested in finding the bounds on $D$, we start with trying to fi
 \end{itemize}
 
 \vspace{1cm}
-Besides trying to analyze and compute the bounds for $D$ for $3$-uniform hypergraphs, I have also tried implementing Algorithm 1 in \cite{chandran2022perfect}, in the process of which I learnt about the Edmonds' blossom algorithm for finding the maximum number of perfect matchings in a regular graph, and the Edmonds-Karp algorithm for finding the maximum flow in a regular graph.
+Besides trying to analyze and compute the bounds for $D$ for $3$-uniform hypergraphs, I have also tried implementing Algorithm 1 in \cite{chandran2022perfect}, in the process of which I learnt about the Edmonds' blossom algorithm for finding the maximum number of perfect matchings in a  graph, and the Edmonds-Karp algorithm for finding the maximum flow in a  graph.
 
 
 \bibliographystyle{abbrv}
