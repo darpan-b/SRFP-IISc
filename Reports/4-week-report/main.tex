@@ -34,7 +34,7 @@ A hypergraph $H$ is said to be \textit{$n$-uniform} if $\forall \hspace{0.1cm} e
 A \textit{perfect matching}, $\mathcal{M}$ of a $n$-uniform hypergraph $H=(V,E)$ can be defined as a matching $M$ of $H$ such that $\forall \hspace{0.1cm} v \in V$, $v$ is part of some edge in $M$. It is trivial to note that for a $n$-uniform hypergraph to have a perfect matching, $|V| \equiv 0 \pmod n$. \\ \\
 A $n$-uniform hypergraph $H$ is said to be perfectly monochromatic if the following \\properties hold:
 \begin{enumerate}
-    \item $\forall \hspace{0.1cm} e \in E$, $e$ must be part of some perfect matching $\mathcal{M}$.
+    % \item $\forall \hspace{0.1cm} e \in E$, $e$ must be part of some perfect matching $\mathcal{M}$.
     \item Every perfect matching, $\mathcal{M}$ of $H$ is monochromatic.
     \item Let $\mathcal{C}$ be set of colour classes such that $\exists$ a perfect matching $\mathcal{M}$ of $H$ such that $\mathcal{M}$ belongs to a colour class $c \in \mathcal{C}$. Then $\forall \hspace{0.1cm} c \in \mathcal{C}$, $c$ must belong to \textit{exactly} $1$ perfect matching $\mathcal{M}$ of $H$.
 \end{enumerate}
@@ -53,7 +53,7 @@ Since we are interested in finding the bounds on $D$, we start with trying to fi
 \end{itemize}
 
 \vspace{1cm}
-Besides trying to analyze and compute the bounds for $D$ for $3$-uniform hypergraphs, I have also tried implementing Algorithm 1 in \cite{chandran2022perfect}, in the process of which I learnt about the Edmonds' blossom algorithm for finding the maximum number of perfect matchings in a  graph, and the Edmonds-Karp algorithm for finding the maximum flow in a  graph.
+Besides trying to analyze and compute the bounds for $D$ for $3$-uniform hypergraphs, I have also tried implementing \textit{Algorithm 1 - To decide whether a non-trivial matching covered graph non-isomorphic to $K_4$ is Type $1$ or Type $2$} in \cite{chandran2022perfect}, in the process of which I learnt about the Edmonds' blossom algorithm for finding the maximum number of perfect matchings in a  graph, and the Edmonds-Karp algorithm for finding the maximum flow in a  graph.
 
 
 \bibliographystyle{abbrv}
