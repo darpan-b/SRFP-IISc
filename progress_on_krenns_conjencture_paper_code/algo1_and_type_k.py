@@ -64,7 +64,7 @@ def check_connected(adj, capacity, source, sink):
 def find_mu(adjacency_list, degrees, nv):
     v = random.randint(0, nv-1) # Pick any v \in V(G), arbitrarily
 
-    C = [] # C = \phi
+    # C = [] # C = \phi
 
     if max(degrees) >= 5: return 1 # if d(v) >= 5 then mu(G) <- 1
 
@@ -147,10 +147,6 @@ def find_mu(adjacency_list, degrees, nv):
         print(current_matching)
         all_matchings.append(current_matching)
 
-    '''
-    DO NOT TOUCH FROM HERE ONWARDS!!!
-    '''
-
 
 
 
@@ -165,21 +161,36 @@ def find_mu(adjacency_list, degrees, nv):
         if hamiltonian_cycle: break
         for j in range(i+1, tot_matchings):
             m1, m2 = all_matchings[i], all_matchings[j]
+            print('m1', m1, 'm2', m2)
             assert(len(m1) == len(m2) and len(m1) == nv//2)
             # m1_s = set()
             # for e in m1: m1_s.add(e)
             is_hamiltonian = True
+
             for k in range(nv//2):
                 if m2[k] in m1:
                     is_hamiltonian = False
                     break
             if not is_hamiltonian: continue
 
+            ''' checking whether it is only 1 hamiltonian cycle or multiple hamiltonian cycles'''
+            all_here = []
+            for e in m1: all_here.append(e)
+            for e in m2: all_here.append(e)
+            all_here.sort()
+            print('all here', all_here)
+            count_vertices = {}
+            for k in range(nv):
+                count_vertices[all_here[k][0]] = count_vertices.get(all_here[k][0], 0) + 1
+                count_vertices[all_here[k][1]] = count_vertices.get(all_here[k][1], 0) + 1
+                print('count vertices', count_vertices)
+                if max(count_vertices.values()) == 2 and min(count_vertices.values()) == 2 and k != nv-1:
+                    is_hamiltonian = False
+                    break
+            if not is_hamiltonian: continue
 
-            ''' TODO: CHECK PROPERLY WHETHER A HAMILTONIAN CYCLE IS FORMED OR NOT!!!'''
 
-
-
+            print('M1', m1, 'M2', m2)
             for e in m1:
                 w1[e[0]], w1[e[1]] = e[1], e[0]
                 hamiltonian_cycle.append(e)
@@ -187,7 +198,10 @@ def find_mu(adjacency_list, degrees, nv):
                 w2[e[0]], w2[e[1]] = e[1], e[0]
                 hamiltonian_cycle.append(e)
             break
-
+    
+    if not hamiltonian_cycle:
+        print('NO HAMILTONIAN CYCLE IS PRESENT HERE')
+        return 1
     print('hamiltonian cycle', hamiltonian_cycle)
     
     re_numbering = [-1 for i in range(nv)]
@@ -219,6 +233,10 @@ def find_mu(adjacency_list, degrees, nv):
 
             ''' DOES NOT REALLY MAKE SENSE TO KEEP IT BECAUSE WHAT EXACTLY IS A HAMILTONIAN CYCLE VARIES '''
             ''' WHAT IS A C-EDGE IN SOME HAMILTONIAN CYCLE CAN BE A DRUM IN ANOTHER HAMILTONIAN CYCLE '''
+
+
+            ''' IN A MATCHING-COVERED-GRAPH, ANY TWO DISJOINT PERFECT MATCHINGS FORM A HAMILTONIAN CYCLE. '''
+
             # if not found:
             #     if re_numbering[u] % 2 != re_numbering[i] % 2:
             #         is_2 = False
