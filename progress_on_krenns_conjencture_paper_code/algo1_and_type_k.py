@@ -148,7 +148,15 @@ def find_mu(adjacency_list, degrees, nv):
         print('u', u, 'v', v)
 
         nodes = [Node() for i in range(nv-2)]
+        for e in nodes:
+            print('eeeeeee', e)
         prev_value = [i for i in range(nv)]
+        imap = {}
+        tval = 0
+        for e in nodes:
+            imap[e.index] = tval
+            tval += 1
+        print(imap)
         for i in range(nv):
             if i == u or i == v: continue
             curno = i
@@ -167,18 +175,22 @@ def find_mu(adjacency_list, degrees, nv):
                 if e > u: neighnode -= 1
                 if e > v: neighnode -= 1
                 nodes[curnode].neighbors.append(nodes[neighnode])
+                print('edge here', curnode+1, neighnode+1)
         
         match = Match(nodes)
         print('unmatched_nodes =', match.unmatched_nodes())
         print('Matching =')
         already_present = set()
-        current_matching = [[u,v]]
+        current_matching = [[min(u,v),max(u,v)]]
         for node in nodes:
             if node.mate != None:
                 assert node.mate.mate == node
-                # print(node, node.mate)
-                num1 = (node.index)%(nv-2)
-                num2 = (node.mate.index)%(nv-2)
+                print('hola', node, node.mate)
+                print(imap)
+                num1 = imap.get(node.index)
+                num2 = imap.get(node.mate.index)
+                # num1 = (node.index)%(nv-2)
+                # num2 = (node.mate.index)%(nv-2)
                 # if num1+1 >= min(u,v): num1 += 1
                 # if num1+1 >= max(u,v): num1 += 1
                 # if num2+1 >= min(u,v): num2 += 1
