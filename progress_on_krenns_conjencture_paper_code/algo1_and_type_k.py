@@ -1,6 +1,9 @@
 from max_matching import Node, Match
 import random # for random.randint()
 
+
+''' THIS IS EDGE-CUT WHICH IS USELESS HERE. WE NEED VERTEX CUT.'''
+
 '''
 To check whether a graph is k-connected, I'm using the Edmonds-Karp algorithm to find the maximum flow of a
 graph in O(|V||E|^2) time.
@@ -13,52 +16,97 @@ of a graph, and hence check whether the graph is 2-connected or 3-connected.
 Performs breadth first search required for finding an augmenting path according to the Ford-Fulkerson method.
 Returns 0 if no augmenting path is found.
 '''
-def bfs(adj, capacity, source, sink, parent):
-    nV = len(adj)
-    for i in range(nV): parent[i] = -1
-    parent[source] = -2
-    q = []
-    INF = 1e18
-    q.append([source, INF])
-    while q:
-        curnode = q[0][0]
-        curflow = q[0][1]
-        q.pop(0)
-        for u in adj[curnode]:
-            if parent[u] != -1 or capacity[curnode][u] == 0:
-                continue
-            parent[u] = curnode
-            newflow = min(curflow, 1)
-            if u == sink: return newflow
-            q.append([u, newflow])
-    return 0
+# def bfs(adj, capacity, source, sink, parent):
+#     nV = len(adj)
+#     for i in range(nV): parent[i] = -1
+#     parent[source] = -2
+#     q = []
+#     INF = 1e18
+#     q.append([source, INF])
+#     while q:
+#         curnode = q[0][0]
+#         curflow = q[0][1]
+#         q.pop(0)
+#         for u in adj[curnode]:
+#             if parent[u] != -1 or capacity[curnode][u] == 0:
+#                 continue
+#             parent[u] = curnode
+#             newflow = min(curflow, 1)
+#             if u == sink: return newflow
+#             q.append([u, newflow])
+#     return 0
 
 
-'''
-Finds out the connectivity of a graph, by finding the maximum flow of a graph. Basically what it does is:
-- Find an augmenting path in the graph using bfs.
-- If augmenting path is found, add the flow of the augmenting path to the maximum flow and perform bfs again.
-- If augmenting path is not found, return the maximum flow obtained so far since that is the maximum flow of
-the graph, or the minimum cut of the graph.
+# '''
+# Finds out the connectivity of a graph, by finding the maximum flow of a graph. Basically what it does is:
+# - Find an augmenting path in the graph using bfs.
+# - If augmenting path is found, add the flow of the augmenting path to the maximum flow and perform bfs again.
+# - If augmenting path is not found, return the maximum flow obtained so far since that is the maximum flow of
+# the graph, or the minimum cut of the graph.
 
-Here we are assuming the graph to be undirected and connected, thus source and sink can be any two random
-vertices.
-'''
-def check_connected(adj, capacity, source, sink):
-    nV = len(adj)
-    total_flow = 0
-    parent = [-1 for i in range(nV)]
-    while True:
-        new_flow = bfs(adj, capacity, source, sink, parent)
-        if new_flow == 0: break
-        total_flow += new_flow
-        curnode = sink
-        while curnode != source:
-            par = parent[curnode]
-            capacity[curnode][par] += new_flow
-            capacity[par][curnode] -= new_flow
-            curnode = par
-    return total_flow
+# Here we are assuming the graph to be undirected and connected, thus source and sink can be any two random
+# vertices.
+# '''
+# def check_connected(adj, capacity, source, sink):
+#     nV = len(adj)
+#     total_flow = 0
+#     parent = [-1 for i in range(nV)]
+#     while True:
+#         new_flow = bfs(adj, capacity, source, sink, parent)
+#         if new_flow == 0: break
+#         total_flow += new_flow
+#         curnode = sink
+#         while curnode != source:
+#             par = parent[curnode]
+#             capacity[curnode][par] += new_flow
+#             capacity[par][curnode] -= new_flow
+#             curnode = par
+#     return total_flow
+
+''' END OF USELESS EDGE CUT '''
+''' -------------------------------------------------------------------------------------- '''
+
+
+
+def dfs(adjacency_list, visited, curnode, avoid1, avoid2, avoid3):
+    if curnode == avoid1 or curnode == avoid2 or curnode == avoid3: return
+    visited[curnode] += 1
+    for e in adjacency_list[curnode]:
+        if e == avoid1 or e == avoid2 or e == avoid3: continue
+        if visited[e] > 0: continue
+        dfs(adjacency_list, visited, e, avoid1, avoid2, avoid3)
+
+
+def check_connected(adjacency_list, nv):
+
+    # checking for 2-connectivity
+    for i in range(nv):
+        for j in range(i+1, nv):
+            tdfs = 0
+            while tdfs == i or tdfs == j: tdfs += 1
+            visited = [0 for i in range(nv)]
+            dfs(adjacency_list, visited, tdfs, i, j, -1)
+            for k in range(nv):
+                if k == i or k == j: continue
+                if visited[k] == 0: return 2
+
+    # checking for 3-connectivity
+    for i in range(nv):
+        for j in range(i+1, nv):
+            for k in range(j+1, nv):
+                tdfs = 0
+                while tdfs == i or tdfs == j or tdfs == k: tdfs += 1
+                visited = [0 for i in range(nv)]
+                dfs(adjacency_list, visited, tdfs, i, j, k)
+                for l in range(nv):
+                    if l == i or l == j or l == k: continue
+                    if visited[l] == 0: return 3
+
+    return -1
+
+
+
+
 
 
 def find_mu(adjacency_list, degrees, nv):
@@ -323,7 +371,7 @@ def main():
         capacity[u][v] = 1
         capacity[v][u] = 1
     is_type2 = (find_mu(adj_list, degree, nv) == 2)
-    connectivity = check_connected(adj_list, capacity, 0, nv - 1)
+    connectivity = check_connected(adj_list, nv)
     is_2_connected = (connectivity >= 2)
     is_3_connected = (connectivity >= 3)
     
