@@ -4,18 +4,6 @@ import random # for random.randint()
 
 ''' THIS IS EDGE-CUT WHICH IS USELESS HERE. WE NEED VERTEX CUT.'''
 
-'''
-To check whether a graph is k-connected, I'm using the Edmonds-Karp algorithm to find the maximum flow of a
-graph in O(|V||E|^2) time.
-The max-flow-min-cut theorem states that the maximum flow of a graph is equal to the minimum cut of a graph.
-If the min cut of a graph is >= k, that means the graph is k-connected. Thus we can find out the minimum cut
-of a graph, and hence check whether the graph is 2-connected or 3-connected.
-'''
-
-'''
-Performs breadth first search required for finding an augmenting path according to the Ford-Fulkerson method.
-Returns 0 if no augmenting path is found.
-'''
 # def bfs(adj, capacity, source, sink, parent):
 #     nV = len(adj)
 #     for i in range(nV): parent[i] = -1
@@ -105,65 +93,26 @@ def check_connected(adjacency_list, nv):
     return -1
 
 
-
-
-
-
 def find_mu(adjacency_list, degrees, nv):
-    v = random.randint(0, nv-1) # Pick any v \in V(G), arbitrarily
+    v = random.randint(0, nv-1)
 
-    # C = [] # C = \phi
-
-    if max(degrees) >= 5: return 1 # if d(v) >= 5 then mu(G) <- 1
-
-    # now try to find a perfect matching for every edge (u,v)
-    # after you find that, then try and pick arbitrary perfect matchings {e1, e2} such that e1 \in M1 and e2 \in M2
-
-
-    ''' It is probably not working becaue the Edmond's Blossom Algorithm implementation in /max_matching.py does not
-        cater to graphs with disconnected components.'''
-
-    # nodes = [Node() for i in range(nv)]
-    # for i in range(nv):
-    #     for u in adjacency_list[i]:
-    #         nodes[i].neighbors.append(nodes[u])
-
-    # for u in adjacency_list[v]:
-    #     # remove the edge (u,v) from the graph
-    #     for e in adjacency_list[u]:
-    #         nodes[e].neighbors.remove(nodes[u])
-    #     for e in adjacency_list[v]:
-    #         nodes[e].neighbors.remove(nodes[v])
-
-    # match = Match(nodes)
-
-    # print('Matching is:')
-    # for node in nodes:
-    #     if node.mate != None:
-    #         assert node.mate.mate == node
-    #         print(node, node.mate)
+    if max(degrees) >= 5: return 1
 
     all_matchings = []
     for u in adjacency_list[v]:
-        print('u', u, 'v', v)
-
         nodes = [Node() for i in range(nv-2)]
-        for e in nodes:
-            print('eeeeeee', e)
         prev_value = [i for i in range(nv)]
         imap = {}
         tval = 0
         for e in nodes:
             imap[e.index] = tval
             tval += 1
-        print(imap)
         for i in range(nv):
             if i == u or i == v: continue
             curno = i
             if i > u: curno -= 1
             if i > v: curno -= 1
             prev_value[curno] = i
-            print('prev value = ', prev_value, 'i =', i, 'nv = ', nv)
         for i in range(nv):
             if i == u or i == v: continue
             curnode = i
@@ -175,43 +124,27 @@ def find_mu(adjacency_list, degrees, nv):
                 if e > u: neighnode -= 1
                 if e > v: neighnode -= 1
                 nodes[curnode].neighbors.append(nodes[neighnode])
-                print('edge here', curnode+1, neighnode+1)
         
         match = Match(nodes)
-        print('unmatched_nodes =', match.unmatched_nodes())
-        print('Matching =')
+        un = match.unmatched_nodes()
+
         already_present = set()
         current_matching = [[min(u,v),max(u,v)]]
         for node in nodes:
             if node.mate != None:
                 assert node.mate.mate == node
-                print('hola', node, node.mate)
-                print(imap)
                 num1 = imap.get(node.index)
                 num2 = imap.get(node.mate.index)
-                # num1 = (node.index)%(nv-2)
-                # num2 = (node.mate.index)%(nv-2)
-                # if num1+1 >= min(u,v): num1 += 1
-                # if num1+1 >= max(u,v): num1 += 1
-                # if num2+1 >= min(u,v): num2 += 1
-                # if num2+1 >= max(u,v): num2 += 1
+
                 if prev_value[num1] in already_present: continue
                 smaller, bigger = prev_value[num1], prev_value[num2]
                 if smaller > bigger: smaller, bigger = bigger, smaller
                 current_matching.append([smaller, bigger])
                 already_present.add(prev_value[num1])
                 already_present.add(prev_value[num2])
-                print(prev_value[num1]+1, prev_value[num2]+1)
 
-        print('current matching = ')
-        print(current_matching)
         all_matchings.append(current_matching)
 
-
-
-
-
-    
     tot_matchings = len(all_matchings)
 
     hamiltonian_cycle = []
@@ -221,10 +154,7 @@ def find_mu(adjacency_list, degrees, nv):
         if hamiltonian_cycle: break
         for j in range(i+1, tot_matchings):
             m1, m2 = all_matchings[i], all_matchings[j]
-            print('m1', m1, 'm2', m2)
             assert(len(m1) == len(m2) and len(m1) == nv//2)
-            # m1_s = set()
-            # for e in m1: m1_s.add(e)
             is_hamiltonian = True
 
             for k in range(nv//2):
@@ -238,19 +168,15 @@ def find_mu(adjacency_list, degrees, nv):
             for e in m1: all_here.append(e)
             for e in m2: all_here.append(e)
             all_here.sort()
-            print('all here', all_here)
             count_vertices = {}
             for k in range(nv):
                 count_vertices[all_here[k][0]] = count_vertices.get(all_here[k][0], 0) + 1
                 count_vertices[all_here[k][1]] = count_vertices.get(all_here[k][1], 0) + 1
-                print('count vertices', count_vertices)
                 if max(count_vertices.values()) == 2 and min(count_vertices.values()) == 2 and k != nv-1:
                     is_hamiltonian = False
                     break
             if not is_hamiltonian: continue
 
-
-            print('M1', m1, 'M2', m2)
             for e in m1:
                 w1[e[0]], w1[e[1]] = e[1], e[0]
                 hamiltonian_cycle.append(e)
@@ -260,9 +186,7 @@ def find_mu(adjacency_list, degrees, nv):
             break
     
     if not hamiltonian_cycle:
-        print('NO HAMILTONIAN CYCLE IS PRESENT HERE')
         return 1
-    print('hamiltonian cycle', hamiltonian_cycle)
     
     re_numbering = [-1 for i in range(nv)]
     re_numbering[0] = 0
@@ -275,10 +199,8 @@ def find_mu(adjacency_list, degrees, nv):
             current_vertex = w2[current_vertex]
         else:
             current_vertex = w1[current_vertex]
-    
-    print('re_numbering', re_numbering)
-    
-    is_2 = True
+    # print('re_numbering', re_numbering)
+
     edge_set = []
     '''checking property 1'''
     for i in range(nv):
@@ -290,21 +212,9 @@ def find_mu(adjacency_list, degrees, nv):
                 if (e[0] == i and e[1] == u) or (e[0] == u and e[1] == i):
                     found = True
                     break
+            if not found:
+                if re_numbering[u]%2 != re_numbering[i]%2: return 1
 
-            ''' DOES NOT REALLY MAKE SENSE TO KEEP IT BECAUSE WHAT EXACTLY IS A HAMILTONIAN CYCLE VARIES '''
-            ''' WHAT IS A C-EDGE IN SOME HAMILTONIAN CYCLE CAN BE A DRUM IN ANOTHER HAMILTONIAN CYCLE '''
-
-
-            ''' IN A MATCHING-COVERED-GRAPH, ANY TWO DISJOINT PERFECT MATCHINGS FORM A HAMILTONIAN CYCLE. '''
-
-            # if not found:
-            #     if re_numbering[u] % 2 != re_numbering[i] % 2:
-            #         is_2 = False
-            #         print('YO')
-            #         return 1
-
-    print('edge set')
-    print(edge_set)
     '''checking property 2'''
     n_es = len(edge_set)
     drum_no = [-1 for i in range(n_es)]
@@ -321,43 +231,67 @@ def find_mu(adjacency_list, degrees, nv):
             e1, e2 = edge_set[i], edge_set[j]
             if e2 in hamiltonian_cycle: continue
             if [edge_set[j][1],edge_set[j][0]] in hamiltonian_cycle: continue
-            v1, v2, v3, v4 = e1[0], e1[1], e2[0], e2[1]
-            print('v1', v1+1, 'v2', v2+1, 'v3', v3+1, 'v4', v4+1)
+
+            ''' TODO: FIX DRUMS!!! '''
+
+            v1, v2, v3, v4 = re_numbering[e1[0]], re_numbering[e1[1]], re_numbering[e2[0]], re_numbering[e2[1]]
+
+            # v1, v2, v3, v4 = e1[0], e1[1], e2[0], e2[1]
             lv = [v1, v2, v3, v4]
             lv.sort()
             if not((lv[0] == v1 and lv[2] == v2) or (lv[0] == v2 and lv[2] == v1) or (lv[1] == v1 and lv[3] == v2) or (lv[1] == v2 and lv[3] == v1)):
                 continue
-            poss1 = [[v1, v3], [v2, v4]]
-            poss2 = [[v1, v4], [v2, v3]]
-            f1 = [False, False]
-            f2 = [False, False]
-            for e in hamiltonian_cycle:
-                if (e[0] == poss1[0][0] and e[1] == poss1[0][1]) or (e[0] == poss1[0][1] and e[1] == poss1[0][0]):
-                    f1[0] = True
-                if (e[0] == poss1[1][0] and e[1] == poss1[1][1]) or (e[0] == poss1[1][1] and e[1] == poss1[1][0]):
-                    f1[1] = True
-                if (e[0] == poss2[0][0] and e[1] == poss2[0][1]) or (e[0] == poss2[0][1] and e[1] == poss2[0][0]):
-                    f2[0] = True
-                if (e[0] == poss2[1][0] and e[1] == poss2[1][1]) or (e[0] == poss2[1][1] and e[1] == poss2[1][0]):
-                    f2[1] = True
-            if (f1[0] and f1[1]) or (f2[0] and f2[1]):
+            
+            dec = 0
+            is_drum = True
+            for k in range(4):
+                if lv[k] < lv[k-1]: dec += 1
+                if lv[k]%2 != lv[k-2]%2:
+                    is_drum = False
+                    break
+            if not is_drum or dec != 1: return 1
+            def is_adj_vertex(x,y): return abs(x-y) == 1 or abs(x-y) == nv-1
+            if (is_adj_vertex(lv[0],lv[1]) and is_adj_vertex(lv[2],lv[3])) or (is_adj_vertex(lv[0],lv[3]) and is_adj_vertex(lv[1],lv[2])):
+                # print(e1[0],e1[1], '   ', e2[0],e2[1])
+                # print('i', i, 'j', j, 'drum_no[i]', drum_no[i], 'drum_no[j]', drum_no[j])
                 if drum_no[i] != -1 or drum_no[j] != -1:
-                    print('YAO')
                     return 1
                 drums += 1
                 drum_no[i], drum_no[j] = drums, drums
             else:
-                print('MEOW?')
                 return 1
+
+            # poss1 = [[v1, v3], [v2, v4]]
+            # poss2 = [[v1, v4], [v2, v3]]
+            # f1 = [False, False]
+            # f2 = [False, False]
+            # for e in hamiltonian_cycle:
+            #     if (e[0] == poss1[0][0] and e[1] == poss1[0][1]) or (e[0] == poss1[0][1] and e[1] == poss1[0][0]):
+            #         f1[0] = True
+            #     if (e[0] == poss1[1][0] and e[1] == poss1[1][1]) or (e[0] == poss1[1][1] and e[1] == poss1[1][0]):
+            #         f1[1] = True
+            #     if (e[0] == poss2[0][0] and e[1] == poss2[0][1]) or (e[0] == poss2[0][1] and e[1] == poss2[0][0]):
+            #         f2[0] = True
+            #     if (e[0] == poss2[1][0] and e[1] == poss2[1][1]) or (e[0] == poss2[1][1] and e[1] == poss2[1][0]):
+            #         f2[1] = True
+            # if (f1[0] and f1[1]) or (f2[0] and f2[1]):
+            #     if drum_no[i] != -1 or drum_no[j] != -1:
+            #         return 1
+            #     drums += 1
+            #     drum_no[i], drum_no[j] = drums, drums
+            # else:
+            #     return 1
     
     '''checking property 3'''
-    if drums == 0: return 2
+    # print('drum no', drum_no)
+    # print('edge set', edge_set)
+    if -1 in drum_no: return 1
+    if max(drum_no) == -2 and min(drum_no) == -2: return 2
     d_count = [0 for i in range(drums)]
     for i in range(n_es):
         if drum_no[i] == -1: return 1
         if drum_no[i] == -2: continue
         d_count[drum_no[i]-1] += 1
-    print('d_count = ', d_count)
     if max(d_count) == 2 and min(d_count) == 2: return 2
     else: return 1
 
@@ -384,8 +318,8 @@ def main():
         capacity[v][u] = 1
     is_type2 = (find_mu(adj_list, degree, nv) == 2)
     connectivity = check_connected(adj_list, nv)
-    is_2_connected = (connectivity >= 2)
-    is_3_connected = (connectivity >= 3)
+    is_2_connected = (connectivity == 2)
+    is_3_connected = (connectivity == 3)
     
     print('Is type 2:', 'Yes' if is_type2 else 'No')
     print('Is 2-connected:', 'Yes' if is_2_connected else 'No')
